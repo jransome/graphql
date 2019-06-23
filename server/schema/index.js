@@ -50,6 +50,12 @@ const CrewType = new GraphQLObjectType({
     name: { type: GraphQLString },
     captain: { type: GraphQLString },
     ships: { type: new GraphQLList(GraphQLString) },
+    films: {
+      type: new GraphQLList(FilmType),
+      resolve(parent, args) {
+        return _.filter(films, { crewId: parent.id })
+      }
+    }
   }),
 });
 
