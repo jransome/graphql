@@ -78,6 +78,14 @@ const RootQuery = new GraphQLObjectType({
         return _.find(crews, { id: args.id })
       }
     },
+    films: {
+      type: new GraphQLList(FilmType),
+      resolve: () => films,
+    },
+    crews: {
+      type: new GraphQLList(CrewType),
+      resolve: () => crews,
+    }
   },
 });
 
