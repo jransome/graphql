@@ -5,6 +5,7 @@ const {
   GraphQLString,
   GraphQLInt,
   GraphQLSchema,
+  GraphQLNonNull,
 } = require('graphql');
 
 const Film = require('../models/film');
@@ -48,18 +49,12 @@ const RootQuery = new GraphQLObjectType({
     film: {
       type: FilmType,
       args: { id: { type: GraphQLID } },
-      resolve(parent, args) {
-        // code to get data from db or somewhere
-        return Film.findById(args.id);
-      },
+      resolve: (parent, args) => Film.findById(args.id),
     },
     crew: {
       type: CrewType,
       args: { id: { type: GraphQLID } },
-      resolve(parent, args) {
-        // code to get data from db or somewhere
-        return Crew.findById(args.id);
-      }
+      resolve: (parent, args) => Crew.findById(args.id),
     },
     films: {
       type: new GraphQLList(FilmType),
@@ -78,30 +73,26 @@ const Mutation = new GraphQLObjectType({
     addCrew: {
       type: CrewType,
       args: {
-        name: { type: GraphQLString },
+        name: { type: new GraphQLNonNull(GraphQLString) },
         captain: { type: GraphQLString },
       },
-      resolve(parent, args) {
-        return Crew.create({
-          name: args.name,
-          captain: args.captain,
-        })
-      }
+      resolve: (parent, args) => Crew.create({
+        name: args.name,
+        captain: args.captain,
+      }),
     },
     addFilm: {
       type: FilmType,
       args: {
-        name: { type: GraphQLString },
+        name: { type: new GraphQLNonNull(GraphQLString) },
         number: { type: GraphQLInt },
-        crewId: { type: GraphQLID },
+        crewId: { type: new GraphQLNonNull(GraphQLID) },
       },
-      resolve(parent, args) {
-        return Film.create({
-          name: args.name,
-          number: args.number,
-          crewId: args.crewId,
-        })
-      }
+      resolve: (parent, args) => Film.create({
+        name: args.name,
+        number: args.number,
+        crewId: args.crewId,
+      }),
     },
   }
 })
